@@ -9,7 +9,10 @@ import java.util.Map;
 public interface AppUserService {
 
     void addAppUser(RegisterUser registerUser);
+
     List<AppUser> getAllUsers();
+
     Long getIdByUsername(String username);
+
     Map<Integer, List<Object>> getAllNotReviewedRequests(Long id);
 }
