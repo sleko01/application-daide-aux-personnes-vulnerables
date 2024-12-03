@@ -44,7 +44,13 @@ public class AppUserServiceImpl implements AppUserService {
         appUser.setPassword(encodedPassword);
         Role role = roleRepository.findByRoleId(registerUser.getRoleId());
         appUser.setRole(role);
+        appUser.setRating("0");
         appUserRepository.save(appUser);
+    }
+
+    @Override
+    public AppUser getUserById(Long id) {
+        return appUserRepository.findByUserId(id);
     }
 
     @Override
@@ -76,6 +82,11 @@ public class AppUserServiceImpl implements AppUserService {
         // allNotReviewedRequests.put(2, Collections.singletonList(notReviewedRequestGuardians));
 
         return allNotReviewedRequests;
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        appUserRepository.deleteById(id);
     }
 
     private void validate(RegisterUser registerUser) {

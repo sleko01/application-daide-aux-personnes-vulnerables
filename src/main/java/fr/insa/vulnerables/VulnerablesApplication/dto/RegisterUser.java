@@ -8,6 +8,17 @@ public class RegisterUser {
     private String password;
     private Long roleId;
 
+    public RegisterUser() {
+    }
+
+    public RegisterUser(String username, String firstName, String lastName, String password, Long roleId) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.roleId = roleId;
+    }
+
     public String getUsername() {
         return username;
     }

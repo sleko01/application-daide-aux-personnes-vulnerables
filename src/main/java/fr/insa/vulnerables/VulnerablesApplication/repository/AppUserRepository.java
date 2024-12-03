@@ -14,13 +14,13 @@ import java.util.Optional;
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     Integer countByUsername(String username);
 
-    Integer countByEmail(String email);
+    //Integer countByEmail(String email);
 
     AppUser findByUsername(String username);
 
     AppUser findByUserId(Long id);
 
-    @Query(value = "SELECT * FROM AppUser a WHERE a.userId != :i", nativeQuery = true)
+    @Query(value = "SELECT * FROM appUser a WHERE a.userId != :i", nativeQuery = true)
     List<Optional<AppUser>> findAllExceptCurrentUser(@Param("i") Long id);
 
     Integer countByUserId(Long id);
