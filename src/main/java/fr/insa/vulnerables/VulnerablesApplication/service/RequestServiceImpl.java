@@ -1,7 +1,6 @@
 package fr.insa.vulnerables.VulnerablesApplication.service;
 
 import fr.insa.vulnerables.VulnerablesApplication.domain.Request;
-import fr.insa.vulnerables.VulnerablesApplication.domain.Status;
 import fr.insa.vulnerables.VulnerablesApplication.dto.RegisterRequest;
 import fr.insa.vulnerables.VulnerablesApplication.repository.AppUserRepository;
 import fr.insa.vulnerables.VulnerablesApplication.repository.RequestRepository;
