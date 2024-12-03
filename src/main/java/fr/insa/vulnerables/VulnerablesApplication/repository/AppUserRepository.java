@@ -14,8 +14,6 @@ import java.util.Optional;
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     Integer countByUsername(String username);
 
-    //Integer countByEmail(String email);
-
     AppUser findByUsername(String username);
 
     AppUser findByUserId(Long id);
