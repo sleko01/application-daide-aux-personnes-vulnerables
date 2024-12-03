@@ -1,6 +1,7 @@
 package fr.insa.vulnerables.VulnerablesApplication.controller;
 
 import fr.insa.vulnerables.VulnerablesApplication.domain.AppUser;
+import fr.insa.vulnerables.VulnerablesApplication.domain.Role;
 import fr.insa.vulnerables.VulnerablesApplication.dto.RegisterUser;
 import fr.insa.vulnerables.VulnerablesApplication.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class AppUserController {
         return appUserService.getIdByUsername(username);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("moderation/{id}/r")
     public Map<Integer, List<Object>> getAllNotReviewedRequests(@PathVariable(required = true) Long id) {
         return appUserService.getAllNotReviewedRequests(id);

@@ -1,11 +1,6 @@
 package fr.insa.vulnerables.VulnerablesApplication.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
@@ -13,7 +8,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class AppUser {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @ManyToOne
