@@ -1,7 +1,6 @@
 package fr.insa.vulnerables.VulnerablesApplication.service;
 
 import fr.insa.vulnerables.VulnerablesApplication.domain.AppUser;
-import fr.insa.vulnerables.VulnerablesApplication.domain.Role;
 import fr.insa.vulnerables.VulnerablesApplication.dto.RegisterUser;
 
 import java.util.List;
@@ -19,5 +18,9 @@ public interface AppUserService {
 
     Map<Integer, List<Object>> getAllNotReviewedRequests(Long id);
 
-    void deleteUserById(Long id);
+    void deleteUserById(Long userId);
+
+    void approveUserById(Long userId);
+
+    AppUser getUserByUsername(String username);
 }

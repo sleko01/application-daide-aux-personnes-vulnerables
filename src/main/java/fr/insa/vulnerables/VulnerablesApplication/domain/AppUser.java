@@ -29,6 +29,8 @@ public class AppUser {
 
     private String rating;
 
+    private String userStatus;
+
     public Long getUserId() {
         return userId;
     }
@@ -83,5 +85,13 @@ public class AppUser {
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
     }
 }
