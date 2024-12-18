@@ -85,8 +85,15 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public void deleteUserById(Long id) {
-        appUserRepository.deleteById(id);
+    public void deleteUserById(Long userId) {
+        appUserRepository.deleteById(userId);
+    }
+
+    @Override
+    public void approveUserById(Long userId) {
+        AppUser appUser = appUserRepository.findByUserId(userId);
+        // TODO: set status of appUser since they need to be approved first by the admin
+        appUserRepository.save(appUser);
     }
 
     private void validate(RegisterUser registerUser) {

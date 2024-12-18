@@ -8,4 +8,8 @@ import java.util.List;
 public interface RequestService {
     List<Request> findAll();
     void addRequest(RegisterRequest request);
+    List<Request> getAllActiveRequests();
+    List<Request> getAllPendingRequests();
+    void changeRequestTypeOfRequest(Long requestId, Long requestTypeId);
+    Request getRequestById(Long requestId);
 }

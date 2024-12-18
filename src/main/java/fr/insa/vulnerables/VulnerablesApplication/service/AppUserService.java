@@ -18,5 +18,7 @@ public interface AppUserService {
 
     Map<Integer, List<Object>> getAllNotReviewedRequests(Long id);
 
-    void deleteUserById(Long id);
+    void deleteUserById(Long userId);
+
+    void approveUserById(Long userId);
 }
