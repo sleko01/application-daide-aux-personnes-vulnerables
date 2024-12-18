@@ -32,7 +32,7 @@ public class WebSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/register").permitAll();
+                    registry.requestMatchers("/users/register").permitAll();
                     registry.requestMatchers("/role").permitAll();
                     registry.anyRequest().authenticated();
                 })
