@@ -21,4 +21,6 @@ public interface AppUserService {
     void deleteUserById(Long userId);
 
     void approveUserById(Long userId);
+
+    AppUser getUserByUsername(String username);
 }

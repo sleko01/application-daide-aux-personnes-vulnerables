@@ -100,6 +100,11 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         appUserRepository.save(appUser);
     }
 
+    @Override
+    public AppUser getUserByUsername(String username) {
+        return appUserRepository.findByUsername(username);
+    }
+
     private void validate(RegisterUser registerUser) {
         Assert.notNull(registerUser, "RegisterUser object must be given");
         Assert.hasText(registerUser.getUsername(), "RegisterUser username must be given");

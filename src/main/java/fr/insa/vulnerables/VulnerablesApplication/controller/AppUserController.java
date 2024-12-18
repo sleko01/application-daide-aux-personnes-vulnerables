@@ -36,8 +36,8 @@ public class AppUserController {
     information once the user has already validated themselves
      */
     @GetMapping("username/{username}")
-    public Long getAppUserIdByUsername(@PathVariable(required = true) String username) {
-        return appUserService.getIdByUsername(username);
+    public AppUser getAppUserByUsername(@PathVariable(required = true) String username) {
+        return appUserService.getUserByUsername(username);
     }
 
     /*
