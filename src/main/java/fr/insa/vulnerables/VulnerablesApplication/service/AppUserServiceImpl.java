@@ -4,6 +4,7 @@ import fr.insa.vulnerables.VulnerablesApplication.domain.AppUser;
 import fr.insa.vulnerables.VulnerablesApplication.domain.Role;
 import fr.insa.vulnerables.VulnerablesApplication.dto.RegisterUser;
 import fr.insa.vulnerables.VulnerablesApplication.repository.AppUserRepository;
+import fr.insa.vulnerables.VulnerablesApplication.repository.RequestRepository;
 import fr.insa.vulnerables.VulnerablesApplication.repository.RoleRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Service
 public class AppUserServiceImpl implements AppUserService, UserDetailsService {
@@ -48,7 +47,8 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         appUser.setPassword(encodedPassword);
         Role role = roleRepository.findByRoleId(registerUser.getRoleId());
         appUser.setRole(role);
-        appUser.setRating("0");
+        appUser.setRating(0);
+        appUser.setUserStatus("PENDING");
         appUserRepository.save(appUser);
     }
 
@@ -68,41 +68,29 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public Map<Integer, List<Object>> getAllNotReviewedRequests(Long id) {
-        AppUser appUser = appUserRepository.findByUserId(id);
-        if (appUser.getRole().getRoleId() != 4) {
-            throw new RequestDeniedException(
-                    "User with role " + appUser.getRole().getRoleName() + " does not have access"
-            );
-        }
-
-        Map<Integer, List<Object>> allNotReviewedRequests = new HashMap<>();
-
-        // TODO: two lists, one containing all not reviewed requests and one containing all not reviewed offers
-        // List<RequestDog> notReviewedRequestDogs = requestDogRepository.findAllNotReviewed();
-        // List<RequestGuardian> notReviewedRequestGuardians = requestGuardianRepository.findAllNotReviewed();
-
-        // allNotReviewedRequests.put(1, Collections.singletonList(notReviewedRequestDogs));
-        // allNotReviewedRequests.put(2, Collections.singletonList(notReviewedRequestGuardians));
-
-        return allNotReviewedRequests;
-    }
-
-    @Override
     public void deleteUserById(Long userId) {
         appUserRepository.deleteById(userId);
     }
 
     @Override
-    public void approveUserById(Long userId) {
+    public void changeUserStatusByUserId(Long userId, String newStatus) {
         AppUser appUser = appUserRepository.findByUserId(userId);
-        // TODO: set status of appUser since they need to be approved first by the admin
+        appUser.setUserStatus(newStatus);
         appUserRepository.save(appUser);
     }
 
     @Override
     public AppUser getUserByUsername(String username) {
         return appUserRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<AppUser> getPendingUsers() {
+        List<AppUser> users = appUserRepository.findAll();
+        return users
+                .stream()
+                .filter(user -> user.getUserStatus().equals("PENDING"))
+                .toList();
     }
 
     private void validate(RegisterUser registerUser) {

@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("users")
@@ -41,20 +40,20 @@ public class AppUserController {
     }
 
     /*
-    This method is used by administrators to approve requests which currently have the status PENDING
+    This method is used by administrators to fetch all the PENDING users to APPROVE/DENY them
      */
     @PreAuthorize("hasRole('Admin')")
-    @GetMapping("moderation/{id}/r")
-    public Map<Integer, List<Object>> getAllNotReviewedRequests(@PathVariable(required = true) Long id) {
-        return appUserService.getAllNotReviewedRequests(id);
+    @GetMapping("pending")
+    public List<AppUser> getPendingUsers() {
+        return appUserService.getPendingUsers();
     }
 
     /*
     After a user creates an account, administrator needs to approve them before they can make any request or offer
      */
     @PreAuthorize("hasRole('Admin')")
-    @PostMapping("approve/{userId}")
-    public void approveUserById(@PathVariable Long userId) {
-        appUserService.approveUserById(userId);
+    @PostMapping("change-user-status/{userId}/{newStatus}")
+    public void approveUserById(@PathVariable Long userId, @PathVariable String newStatus) {
+        appUserService.changeUserStatusByUserId(userId, newStatus);
     }
 }

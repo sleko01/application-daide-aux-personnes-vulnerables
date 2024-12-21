@@ -1,7 +1,8 @@
 package fr.insa.vulnerables.VulnerablesApplication.service;
 
+import fr.insa.vulnerables.VulnerablesApplication.domain.AppUser;
 import fr.insa.vulnerables.VulnerablesApplication.domain.Request;
-import fr.insa.vulnerables.VulnerablesApplication.domain.RequestType;
+import fr.insa.vulnerables.VulnerablesApplication.domain.Status;
 import fr.insa.vulnerables.VulnerablesApplication.dto.RegisterRequest;
 import fr.insa.vulnerables.VulnerablesApplication.repository.AppUserRepository;
 import fr.insa.vulnerables.VulnerablesApplication.repository.RequestRepository;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,41 +46,96 @@ public class RequestServiceImpl implements RequestService {
         request.setMessage(registerRequest.getMessage());
         request.setRequestType(requestTypeRepository.findByRequestTypeId(registerRequest.getRequestTypeId()));
         request.setAppUser(appUserRepository.findByUserId(registerRequest.getAppUserId()));
-        request.setRating(0); // TODO: this needs to be done a different way
+        request.setRating(0);
         request.setStatus(statusRepository.findByStatusName("Pending")); // sets the status to pending when the status is first created
         requestRepository.save(request);
     }
 
     @Override
-    public List<Request> getAllActiveRequests() {
-        return requestRepository.findAllByRequestType(1L)
-                .stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Request> getAllPendingRequests() {
-        // TODO: do this with actual IDs instead of just 1L/2L/3L
-        return requestRepository.findAllByRequestType(2L)
-                .stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void changeRequestTypeOfRequest(Long requestId, Long requestTypeId) {
+    public void changeRequestStatus(Long requestId, String statusName) {
         Request request = this.getRequestById(requestId);
-        RequestType requestType = requestTypeRepository.findByRequestTypeId(requestTypeId);
-        request.setRequestType(requestType);
+        Status status = statusRepository.findByStatusName(statusName);
+        request.setStatus(status);
+        requestRepository.save(request);
     }
 
     @Override
     public Request getRequestById(Long requestId) {
         // this method will throw a NoSuchElementException if there isn't a request by given ID
         return requestRepository.findById(requestId).orElseThrow();
+    }
+
+    @Override
+    public List<Request> getRequestsByUserId(Long userId) {
+        return requestRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<Request> getAllActiveRequestsApartFromCurrentUser(Long userId) {
+        AppUser appUser = appUserRepository.findByUserId(userId);
+        List<Request> allActiveRequestsAndOffers = requestRepository.findAll()
+                .stream()
+                .filter(request -> request.getStatus().getStatusName().equals("Validated"))
+                .filter(request -> !Objects.equals(request.getAppUser().getUserId(), userId))
+                .toList();
+        if (appUser.getRole().getRoleId() == 1L) {
+            // user is a vulnerable person, so return all active offers
+            return allActiveRequestsAndOffers.stream()
+                    .filter(request -> request.getRequestType().getRequestTypeId() == 2L)
+                    .collect(Collectors.toList());
+        } else if (appUser.getRole().getRoleId() == 2L) {
+            // user is a volunteer, so return all active requests
+            return allActiveRequestsAndOffers.stream()
+                    .filter(request -> request.getRequestType().getRequestTypeId() == 1L)
+                    .collect(Collectors.toList());
+        } else {
+            throw new IllegalArgumentException("User with ID " + userId + " has an invalid role for this request");
+        }
+    }
+
+    @Override
+    public List<Request> getAllPendingRequestsAndOffers() {
+        return requestRepository.findAll()
+                .stream()
+                .filter(request -> request.getStatus().getStatusName().equals("Pending"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void rateRequest(Long requestId, int rating) {
+        Request request = this.getRequestById(requestId);
+        request.setRating(rating);
+        AppUser appUser = appUserRepository.findByUserId(request.getAppUser().getUserId());
+        if (appUser.getRating() == 0) {
+            appUser.setRating(rating);
+        } else {
+            long numberOfRatings = requestRepository.findAllByUserId(appUser.getUserId())
+                    .stream()
+                    .filter(r -> r.getRating() != 0)
+                    .count();
+            appUser.setRating((appUser.getRating() + rating) / numberOfRatings);
+        }
+        request.setStatus(statusRepository.findByStatusName("Completed"));
+        appUserRepository.save(appUser);
+        requestRepository.save(request);
+    }
+
+    @Override
+    public List<Request> getAllAcceptedInProgressRequests(Long userId) {
+        return requestRepository.findAll()
+                .stream()
+                .filter(request -> request.getStatus().getStatusName().equals("InProgress"))
+                .filter(request -> Objects.equals(request.getUserAccepted().getUserId(), userId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void acceptRequest(Long requestId, Long userId) {
+        Request request = this.getRequestById(requestId);
+        AppUser appUser = appUserRepository.findByUserId(userId);
+        request.setUserAccepted(appUser);
+        request.setStatus(statusRepository.findByStatusName("InProgress"));
+        requestRepository.save(request);
     }
 
     private void validate(RegisterRequest registerRequest) {

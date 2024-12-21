@@ -27,7 +27,7 @@ public class AppUser {
     @NotNull
     private String password;
 
-    private String rating;
+    private double rating;
 
     private String userStatus;
 
@@ -79,11 +79,11 @@ public class AppUser {
         this.password = password;
     }
 
-    public String getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

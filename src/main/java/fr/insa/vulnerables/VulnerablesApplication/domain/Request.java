@@ -27,6 +27,10 @@ public class Request {
     private String location;
     private String message;
 
+    @ManyToOne
+    @JoinColumn(name = "userAcceptedId")
+    private AppUser userAccepted;
+
     public Long getRequestId() {
         return requestId;
     }
@@ -89,5 +93,13 @@ public class Request {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public AppUser getUserAccepted() {
+        return userAccepted;
+    }
+
+    public void setUserAccepted(AppUser userAccepted) {
+        this.userAccepted = userAccepted;
     }
 }

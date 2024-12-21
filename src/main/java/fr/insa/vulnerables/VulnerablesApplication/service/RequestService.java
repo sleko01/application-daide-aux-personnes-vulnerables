@@ -8,8 +8,12 @@ import java.util.List;
 public interface RequestService {
     List<Request> findAll();
     void addRequest(RegisterRequest request);
-    List<Request> getAllActiveRequests();
-    List<Request> getAllPendingRequests();
-    void changeRequestTypeOfRequest(Long requestId, Long requestTypeId);
+    void changeRequestStatus(Long requestId, String statusName);
     Request getRequestById(Long requestId);
+    List<Request> getRequestsByUserId(Long userId);
+    List<Request> getAllActiveRequestsApartFromCurrentUser(Long userId);
+    List<Request> getAllPendingRequestsAndOffers();
+    void rateRequest(Long requestId, int rating);
+    List<Request> getAllAcceptedInProgressRequests(Long userId);
+    void acceptRequest(Long requestId, Long userId);
 }
