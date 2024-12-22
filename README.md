@@ -33,8 +33,10 @@ meaning only one side can rate the request (the user that completed the request)
 
 ## Running the application
 Since the application itself is divided into two separate parts, the startup is also divided into two parts.
-To run the Java Swing application, you must position yourself within the `Swing` directory and run the following command:
+To run the Java Swing application, you must position yourself within the `Swing` directory and run the following commands:
+```mvn clean compile```
 ```mvn exec:java```
 
 To run the Spring Boot application, you must position yourself within the `Server` directory and run the following command:
+```mvn clean compile```
 ```mvn spring-boot:run```
