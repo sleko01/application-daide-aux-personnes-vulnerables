@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RequestService {
     List<Request> findAll();
-    void addRequest(RegisterRequest request);
+    Request addRequest(RegisterRequest request);
     void changeRequestStatus(Long requestId, String statusName);
     Request getRequestById(Long requestId);
     List<Request> getRequestsByUserId(Long userId);
@@ -16,4 +16,5 @@ public interface RequestService {
     void rateRequest(Long requestId, int rating);
     List<Request> getAllAcceptedInProgressRequests(Long userId);
     void acceptRequest(Long requestId, Long userId);
+    void deleteRequestById(Long requestId);
 }

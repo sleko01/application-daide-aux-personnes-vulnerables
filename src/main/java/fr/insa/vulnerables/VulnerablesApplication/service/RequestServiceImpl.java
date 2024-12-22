@@ -37,7 +37,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void addRequest(RegisterRequest registerRequest) {
+    public Request addRequest(RegisterRequest registerRequest) {
         validate(registerRequest);
 
         Request request = new Request();
@@ -49,6 +49,7 @@ public class RequestServiceImpl implements RequestService {
         request.setRating(0);
         request.setStatus(statusRepository.findByStatusName("Pending")); // sets the status to pending when the status is first created
         requestRepository.save(request);
+        return request;
     }
 
     @Override
@@ -138,16 +139,25 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.save(request);
     }
 
+    @Override
+    public void deleteRequestById(Long requestId) {
+        requestRepository.deleteById(requestId);
+    }
+
     private void validate(RegisterRequest registerRequest) {
         Assert.notNull(registerRequest, "RegisterRequest object must be given");
         Assert.hasText(registerRequest.getName(), "RegisterRequest name must be given");
         Assert.hasText(registerRequest.getLocation(), "RegisterRequest location must be given");
         Assert.hasText(registerRequest.getMessage(), "RegisterRequest message must be given");
+        Long appUserRoleId = appUserRepository.findByUserId(registerRequest.getAppUserId()).getRole().getRoleId();
         if (requestTypeRepository.countByRequestTypeId(registerRequest.getRequestTypeId()) == 0) {
             throw new RequestDeniedException("RequestType with id " + registerRequest.getRequestTypeId() + " does not exist");
         }
         if (appUserRepository.countByUserId(registerRequest.getAppUserId()) == 0) {
             throw new RequestDeniedException("AppUser with id " + registerRequest.getAppUserId() + " does not exist");
+        }
+        if (!Objects.equals(registerRequest.getRequestTypeId(), appUserRoleId)) {
+            throw new RequestDeniedException("AppUser with id " + registerRequest.getAppUserId() + " has an invalid role for this request");
         }
     }
 }
