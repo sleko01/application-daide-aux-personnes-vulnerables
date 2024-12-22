@@ -15,13 +15,28 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  server:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 21
+    - run: mv -f Server/* .
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B clean compile --file pom.xml
+  client:
+  runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+    - run: mv -f Swing/* .
       uses: actions/setup-java@v4
       with:
         java-version: '21'
