@@ -50,7 +50,11 @@ public class ApproveDenyUsersAdminComponent extends JComponent {
     }
 
     public void removeRow(int rowIndex) {
-        tableModel.removeRow(rowIndex);
+        try {
+            tableModel.removeRow(rowIndex);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            tableModel.removeRow(0);
+        }
     }
 
     static class ButtonRenderer extends JPanel implements TableCellRenderer {
