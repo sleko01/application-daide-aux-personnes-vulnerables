@@ -22,7 +22,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @Profile("basic-security")
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = false)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurity {
 
     @Autowired
@@ -32,9 +32,9 @@ public class WebSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/users/register").permitAll();
-                    registry.requestMatchers("/role").permitAll();
-                    registry.anyRequest().authenticated();
+                    registry.requestMatchers("/users/register").permitAll(); // allows anyone to register
+                    registry.requestMatchers("/role").permitAll(); // allows anyone to fetch roles (needed for registration)
+                    registry.anyRequest().authenticated(); // for any other path user needs to be logged in
                 })
                 .formLogin().failureHandler(new SimpleUrlAuthenticationFailureHandler())
                 .successHandler((request, response, authentication) -> response.setStatus(HttpStatus.OK.value()))

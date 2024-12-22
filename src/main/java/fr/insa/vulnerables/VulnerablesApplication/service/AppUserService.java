@@ -4,7 +4,6 @@ import fr.insa.vulnerables.VulnerablesApplication.domain.AppUser;
 import fr.insa.vulnerables.VulnerablesApplication.dto.RegisterUser;
 
 import java.util.List;
-import java.util.Map;
 
 public interface AppUserService {
 
@@ -16,11 +15,11 @@ public interface AppUserService {
 
     Long getIdByUsername(String username);
 
-    Map<Integer, List<Object>> getAllNotReviewedRequests(Long id);
-
     void deleteUserById(Long userId);
 
-    void approveUserById(Long userId);
+    void changeUserStatusByUserId(Long userId, String newStatus);
 
     AppUser getUserByUsername(String username);
+
+    List<AppUser> getPendingUsers();
 }
