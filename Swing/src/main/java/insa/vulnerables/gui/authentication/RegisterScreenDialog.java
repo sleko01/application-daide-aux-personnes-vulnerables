@@ -22,22 +22,22 @@ public class RegisterScreenDialog extends JDialog {
 
         JPanel firstNamePanel = new JPanel();
         firstNamePanel.add(new JLabel("First Name:"));
-        firstNameField = new JTextField(15);
+        firstNameField = new JTextField(20);
         firstNamePanel.add(firstNameField);
 
         JPanel lastNamePanel = new JPanel();
         lastNamePanel.add(new JLabel("Last Name:"));
-        lastNameField = new JTextField(15);
+        lastNameField = new JTextField(20);
         lastNamePanel.add(lastNameField);
 
         JPanel usernamePanel = new JPanel();
         usernamePanel.add(new JLabel("Username:"));
-        usernameField = new JTextField(15);
+        usernameField = new JTextField(20);
         usernamePanel.add(usernameField);
 
         JPanel passwordPanel = new JPanel();
         passwordPanel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField(15);
+        passwordField = new JPasswordField(20);
         passwordPanel.add(passwordField);
 
         JPanel rolePanel = new JPanel();
@@ -60,7 +60,6 @@ public class RegisterScreenDialog extends JDialog {
         getContentPane().add(inputPanel, BorderLayout.CENTER);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         pack();
-        setLocationRelativeTo(parent);
     }
 
     private JPanel getjPanel(JFrame parent) {

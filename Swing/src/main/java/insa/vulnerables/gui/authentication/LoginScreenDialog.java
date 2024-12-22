@@ -26,16 +26,16 @@ public class LoginScreenDialog extends JDialog {
 
         JPanel usernamePanel = new JPanel(new BorderLayout(5, 5));
         usernamePanel.add(new JLabel("Username:"), BorderLayout.WEST);
-        usernameField = new JTextField(15);
+        usernameField = new JTextField(20);
         usernamePanel.add(usernameField, BorderLayout.CENTER);
 
         JPanel passwordPanel = new JPanel(new BorderLayout(5, 5));
         passwordPanel.add(new JLabel("Password:"), BorderLayout.WEST);
-        passwordField = new JPasswordField(15);
+        passwordField = new JPasswordField(20);
         passwordPanel.add(passwordField, BorderLayout.CENTER);
 
         inputPanel.add(usernamePanel);
-        inputPanel.add(Box.createVerticalStrut(10)); // Spacer between fields
+        inputPanel.add(Box.createVerticalStrut(10));
         inputPanel.add(passwordPanel);
 
         JPanel buttonPanel = getjPanel(parent);
@@ -88,16 +88,6 @@ public class LoginScreenDialog extends JDialog {
                         "Invalid username or password!",
                         "Login Failed",
                         JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        // this just adds the ability to press enter instead of clicking the login button
-        loginButton.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    loginButton.doClick();
-                }
             }
         });
 

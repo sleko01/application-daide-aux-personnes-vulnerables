@@ -63,14 +63,15 @@ public class ApproveDenyUsersAdminComponent extends JComponent {
             removeAll();
             JButton approveButton = new JButton("Approve");
             JButton denyButton = new JButton("Reject");
-            approveButton.setPreferredSize(new Dimension(100, 30));
-            denyButton.setPreferredSize(new Dimension(100, 30));
+            approveButton.setPreferredSize(new Dimension(75, 30));
+            denyButton.setPreferredSize(new Dimension(75, 30));
             add(approveButton);
             add(denyButton);
             return this;
         }
     }
 
+    // this whole thing is just used, so I can place the button inside the table
     static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         private JPanel panel;
         private JButton approveButton;
@@ -111,8 +112,8 @@ public class ApproveDenyUsersAdminComponent extends JComponent {
                 }
             });
 
-            approveButton.setPreferredSize(new Dimension(100, 30));
-            denyButton.setPreferredSize(new Dimension(100, 30));
+            approveButton.setPreferredSize(new Dimension(75, 30));
+            denyButton.setPreferredSize(new Dimension(75, 30));
             panel.add(approveButton);
             panel.add(denyButton);
         }

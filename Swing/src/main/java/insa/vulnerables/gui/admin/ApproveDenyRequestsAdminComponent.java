@@ -68,8 +68,8 @@ public class ApproveDenyRequestsAdminComponent extends JComponent {
             removeAll();
             JButton approveButton = new JButton("Approve");
             JButton denyButton = new JButton("Deny");
-            approveButton.setPreferredSize(new Dimension(100, 30));
-            denyButton.setPreferredSize(new Dimension(100, 30));
+            approveButton.setPreferredSize(new Dimension(75, 30));
+            denyButton.setPreferredSize(new Dimension(75, 30));
             add(approveButton);
             add(denyButton);
             return this;
@@ -116,8 +116,8 @@ public class ApproveDenyRequestsAdminComponent extends JComponent {
                 }
             });
 
-            approveButton.setPreferredSize(new Dimension(100, 30));
-            denyButton.setPreferredSize(new Dimension(100, 30));
+            approveButton.setPreferredSize(new Dimension(75, 30));
+            denyButton.setPreferredSize(new Dimension(75, 30));
             panel.add(approveButton);
             panel.add(denyButton);
         }

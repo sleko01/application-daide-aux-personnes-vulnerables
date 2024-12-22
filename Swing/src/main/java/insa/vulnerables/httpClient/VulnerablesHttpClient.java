@@ -30,10 +30,12 @@ public final class VulnerablesHttpClient {
     private static final String REGISTER_URL = "/users/register";
     private static volatile VulnerablesHttpClient instance;
     private static String jSessionId;
+    private ObjectMapper objectMapper;
 
 
     // singleton pattern to ensure we only have one instance of http client running
     private VulnerablesHttpClient() {
+        objectMapper = new ObjectMapper();
     }
 
     public static VulnerablesHttpClient getInstance() {
@@ -65,20 +67,14 @@ public final class VulnerablesHttpClient {
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
             try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
-
-                // username part of the request
                 outputStream.writeBytes(twoHyphens + boundary + lineSeparator);
                 outputStream.writeBytes("Content-Disposition: form-data; name=\"username\"" + lineSeparator);
                 outputStream.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineSeparator + lineSeparator);
                 outputStream.writeBytes(username + lineSeparator);
-
-                // password part of the request
                 outputStream.writeBytes(twoHyphens + boundary + lineSeparator);
                 outputStream.writeBytes("Content-Disposition: form-data; name=\"password\"" + lineSeparator);
                 outputStream.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineSeparator + lineSeparator);
                 outputStream.writeBytes(password + lineSeparator);
-
-                // combine all
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineSeparator);
                 outputStream.flush();
             }
@@ -96,8 +92,6 @@ public final class VulnerablesHttpClient {
                 }
                 getUserDetails(username);
                 return true;
-            } else {
-                System.out.println("Login failed. Status code: " + connection.getResponseCode());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -180,12 +174,9 @@ public final class VulnerablesHttpClient {
 
         String allRoles = sendGetRequest("/role").body();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
         List<Map<String, Object>> list;
         try {
-            list = objectMapper.readValue(allRoles, new TypeReference<>() {
-            });
+            list = objectMapper.readValue(allRoles, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -193,7 +184,7 @@ public final class VulnerablesHttpClient {
         Map<String, Integer> roleMap = list.stream()
                 .collect(Collectors.toMap(
                         item -> (String) item.get("roleName"),
-                        item -> (Integer) item.get("roleId")
+                        item -> (int) item.get("roleId")
                 ));
 
         Map<String, Object> formData = Map.of(
@@ -219,12 +210,8 @@ public final class VulnerablesHttpClient {
                 os.write(input, 0, input.length);
             }
 
-            int statusCode = connection.getResponseCode();
-            if (statusCode == 200 || statusCode == 201) {
+            if (connection.getResponseCode() == 200) {
                 return true;
-            } else {
-                System.out.println("Error: " + statusCode);
-                System.out.println("Message: " + connection.getResponseMessage());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -238,7 +225,6 @@ public final class VulnerablesHttpClient {
 
     private void getUserDetails(String username) {
         HttpResponse<String> response = sendGetRequest("/users/username/" + username);
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             AppUser.setLoggedInUser(objectMapper.readValue(response.body(), AppUser.class));
         } catch (JsonProcessingException e) {
@@ -279,10 +265,10 @@ public final class VulnerablesHttpClient {
             throw new RuntimeException("Invalid request type.");
         }
 
-        HttpURLConnection connection = null;
+
         try {
             URL url = new URL(SERVER_URL + "/requests/add");
-            connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -297,13 +283,8 @@ public final class VulnerablesHttpClient {
                 os.write(input, 0, input.length);
             }
 
-            // Check the response
-            int statusCode = connection.getResponseCode();
-            if (statusCode == 200 || statusCode == 201) {
+            if (connection.getResponseCode() == 200) {
                 return true;
-            } else {
-                System.out.println("Error: " + statusCode);
-                System.out.println("Message: " + connection.getResponseMessage());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -313,10 +294,8 @@ public final class VulnerablesHttpClient {
 
     public List<Request> getUserRequests() {
         HttpResponse<String> response = sendGetRequest("/requests/user/" + AppUser.getLoggedInUser().getUserId());
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Request>>() {
-            });
+            return objectMapper.readValue(response.body(), new TypeReference<List<Request>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -324,10 +303,8 @@ public final class VulnerablesHttpClient {
 
     public List<Request> getAllOtherOffers() {
         HttpResponse<String> response = sendGetRequest("/requests/all-active-apart-from-current-user/" + AppUser.getLoggedInUser().getUserId());
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Request>>() {
-            });
+            return objectMapper.readValue(response.body(), new TypeReference<List<Request>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -335,9 +312,8 @@ public final class VulnerablesHttpClient {
 
     public List<AppUser> getPendingUsers() {
         HttpResponse<String> response = sendGetRequest("/users/pending");
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response.body(), new TypeReference<List<AppUser>>() {
+            return objectMapper.readValue(response.body(), new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -346,9 +322,8 @@ public final class VulnerablesHttpClient {
 
     public List<Request> getPendingRequests() {
         HttpResponse<String> response = sendGetRequest("/requests/pending-requests-offers");
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Request>>() {
+            return objectMapper.readValue(response.body(), new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -357,9 +332,8 @@ public final class VulnerablesHttpClient {
 
     public List<Request> getAllMyAcceptedRequests() {
         HttpResponse<String> response = sendGetRequest("/requests/all-accepted-in-progress/" + AppUser.getLoggedInUser().getUserId());
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Request>>() {
+            return objectMapper.readValue(response.body(), new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
